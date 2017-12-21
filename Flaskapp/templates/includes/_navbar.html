@@ -1,8 +1,10 @@
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <div class="container">
       <a class="navbar-brand" href="#">My Flask App</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+
 
       <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
@@ -14,7 +16,24 @@
           </li>
           <li class="nav-item">
             <a class="nav-link disabled" href="/articles">Articles</a></li>
-    </ul>
+        </ul>
+         </div>
+
+        <ul class="navbar-nav navbar-right">
+        <li class="nav-item">
+            <a class="nav-link" href="/register">Register</a>
+          </li>         
+        
+        <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>  
+
+          {% if session.logged_in %} 
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li> 
+          {% endif %}        
+      </ul>
   </div>
 </div>
 </nav>
