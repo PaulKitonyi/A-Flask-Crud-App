@@ -1,4 +1,6 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
+# from flask_mail import Mail, Message
+# from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 # from data import Articles
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
@@ -7,6 +9,9 @@ from functools import wraps
 
 
 app= Flask(__name__)
+# app.config.from_pyfile('config.cfg')
+# mail = Mail(app)
+# s= URLSafeTimedSerializer('This is a secret')
 
 #config mysql
 app.config['MYSQL_HOST'] = 'localhost'
@@ -52,7 +57,7 @@ def articles():
 	
 
 #Single Article
-@app.route('/article/<string:id>/')
+@app.route('/articles/<string:id>/')
 def article(id):
 	# Create Cursor
 	cur = mysql.connection.cursor()
@@ -66,13 +71,13 @@ def article(id):
 #Register Form Class
 class RegisterForm(Form):
 	name = StringField('Name', [validators.Length(min=1, max=50)])
-	username=StringField('username', [validators.Length(min=4, max=25)])
+	username=StringField('Username', [validators.Length(min=4, max=25)])
 	email=StringField('Email', [validators.Length(min=6, max=50)])
 	password=PasswordField('Password', [
 		validators.DataRequired(),
 		validators.EqualTo('confirm', message='Passwords Do not Match')
 	])
-	confirm=PasswordField('confirm Password')
+	confirm=PasswordField('Confirm Password')
 
 #User Register
 @app.route('/register', methods=['GET', 'POST'])
@@ -90,19 +95,38 @@ def register():
 		#Execute query
 		cur.execute("INSERT INTO users(name, username, email, password)VALUES(%s, %s, %s, %s)",(name, username, email, password))
 
+		#Confirm the Email Used for registration whether valid
+		# email = request.form['email']
+		# token = s.dumps(email, salt='email-confirm')
+
+		# msg = Message('Confirm Email',sender='paulmucimah@gmail.com', recipients=[email])
+		# link = url_for('confirm_email', token=token, external=True)
+		# msg.body = 'Your confirmation link is {}'.format(link)
+		# mail.send(msg)
+
 		#commit to DB
 		mysql.connection.commit()
 
 		#close connection
 		cur.close()
 
-		flash("You are now registered and can login", 'success')
+		flash("You are now registered and can login to confirm your Email", 'success')
 
 		redirect(url_for('index'))
 
 
 		return render_template('register.html', form=form)
 	return render_template('register.html', form=form)
+
+# Confirm Email
+	# @app.route('/confirm_email/<token>')
+	# def confirm_email(token):
+	# 	try:
+	# 		email = s.loads(token, salt='email-confirm', max_age=3600)
+	# 	except SignatureExpired:
+	# 		return '<h1>The link has already Expired</h1>'
+	# 	return "The Email has been confirmed"
+
 
 #user login
 @app.route('/login', methods=['GET', 'POST'])
