@@ -33,7 +33,7 @@ numpy==1.13.3
 oauthlib==2.0.0
 olefile==0.44
 passlib==1.7.1
-Pillow==4.3.0
+Pillow==8.1.1
 psycopg2==2.6.2
 pygame==1.9.3
 PyJWT==1.4.2
